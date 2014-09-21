@@ -1,27 +1,23 @@
-{-# LANGUAGE TypeSynonymInstances, FlexibleInstances #-}
+{-# LANGUAGE TypeSynonymInstances, FlexibleInstances, GeneralizedNewtypeDeriving #-}
 {-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
 module HInH.Types
-(HTML
+(HTML ()
 )where
+import Control.Monad.Writer
+
 import qualified Data.Map as M
-data HTML = H [TT]
+newtype HTML a = H (Writer [TT] a) deriving(Functor,Monad)
 data TT = Tag_ Tag | Text String
-data Tag = Tag{name :: String, attr :: M.Map String String, inner :: HTML} 
+data Tag = Tag{name :: String, attr :: M.Map String String, inner :: HTML ()} 
 
-
-appendHTML :: HTML -> HTML -> HTML
-appendHTML (H a) (H b) = H (a++b)
-
-class A a where __ :: a -> HTML
-instance A String where __ = H . (:[]) . Text
-instance A TT where __ = H . (:[])
-instance A Tag where __ = H . (:[]) . Tag_
- 
-instance A HTML where
- __ = id
+class A a where __ :: a -> HTML ()
+instance A String where __ = H . tell . (:[]) . Text
+instance A TT where __ = H . tell . (:[])
+instance A Tag where __ = H . tell . (:[]) . Tag_
+instance A (HTML ()) where __ = id
 
 makeTag :: (A t) => String -> t -> Tag
 makeTag tagname inside = Tag{name = tagname, attr = M.empty, inner = __ inside}
 
-p :: (A t) => t -> HTML
+p :: (A t) => t -> HTML ()
 p = __ . makeTag "p"
