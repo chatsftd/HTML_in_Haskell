@@ -1,4 +1,3 @@
-{-# LANGUAGE TypeSynonymInstances, FlexibleInstances, GeneralizedNewtypeDeriving #-}
 {-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
 module HInH.Dats
 (p

@@ -7,6 +7,8 @@ module HInH.Types
 ,makeTag
 ,TT(..)
 ,Tag(..)
+,EmptyTag(..)
+,ScriptTag(..)
 )where
 import Control.Monad.Writer
 import HinH.NonEmpty
@@ -14,8 +16,11 @@ import HinH.NonEmpty
 import qualified Data.Map as M
 newtype HTML a = H (Writer TTList a) deriving(Functor,Monad)
 newtype TTList = L ([TT]) 
-data TT = Tag_ Tag | Text String
-data Tag = Tag{name :: String, attr :: M.Map String String, inner :: HTML ()} 
+type Attr = M.Map String String
+data TT = Tag_ Tag | ETag_ EmptyTag | STag_ ScriptTag | Text String
+data Tag = Tag{name :: String, attr :: Attr, inner :: HTML ()} 
+data EmptyTag = ETag{nameE :: String, attrE :: Attr}
+data ScriptTag = STag{nameS :: String, attrS :: Attr, innerS :: String}
 
 instance Monoid TTList where
  mempty = L []
@@ -33,11 +38,15 @@ class A a where __ :: a -> HTML ()
 instance A (HTML ()) where __ = id
 instance A TT where __ = H . tell . L . (:[])
 instance A Tag where __ = H . tell . L . (:[]) . Tag_
+instance A EmptyTag where __ = H . tell . L . (:[]) . ETag_
+instance A ScriptTag where __ = H . tell . L . (:[]) . STag_
 instance A String where __ = H . tell . L . (:[]) . Text
 
 class B a where __TT :: a -> TT
 instance B TT where __TT = id
 instance B Tag where __TT = Tag_
+instance B EmptyTag where __TT = ETag_
+instance B ScriptTag where __TT = STag_
 instance B String where __TT = Text
 
 makeTag :: (A t) => String -> t -> Tag
