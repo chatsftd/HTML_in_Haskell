@@ -1,5 +1,5 @@
 {-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
-import HInH.Types
+import HInH.Dats
 main :: IO ()
 main = putStrLn ""
 
