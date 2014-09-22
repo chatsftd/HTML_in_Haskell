@@ -9,18 +9,23 @@ module HInH.Types
 ,Tag(..)
 ,EmptyTag(..)
 ,ScriptTag(..)
+,Attr
+,rawHTML
 )where
 import Control.Monad.Writer
 import HinH.NonEmpty
 
 import qualified Data.Map as M
 newtype HTML a = H (Writer TTList a) deriving(Functor,Monad)
-newtype TTList = L ([TT]) 
+newtype TTList = L { unL :: [TT] }
 type Attr = M.Map String String
-data TT = Tag_ Tag | ETag_ EmptyTag | STag_ ScriptTag | Text String
+data TT = Tag_ Tag | ETag_ EmptyTag | STag_ ScriptTag | Text String 
 data Tag = Tag{name :: String, attr :: Attr, inner :: HTML ()} 
 data EmptyTag = ETag{nameE :: String, attrE :: Attr}
 data ScriptTag = STag{nameS :: String, attrS :: Attr, innerS :: String}
+
+rawHTML :: HTML a -> [TT]
+rawHTML (H w) = unL $ execWriter w
 
 instance Monoid TTList where
  mempty = L []
