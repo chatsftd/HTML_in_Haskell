@@ -14,9 +14,10 @@ module HInH.Types
 )where
 import Control.Monad.Writer
 import HinH.NonEmpty
+import Control.Applicative
 
 import qualified Data.Map as M
-newtype HTML a = H (Writer TTList a) deriving(Functor,Monad)
+newtype HTML a = H (Writer TTList a) deriving(Functor,Applicative,Monad)
 newtype TTList = L { unL :: [TT] }
 type Attr = M.Map String String
 data TT = Tag_ Tag | ETag_ EmptyTag | STag_ ScriptTag | Text String 

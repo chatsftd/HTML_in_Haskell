@@ -14,6 +14,7 @@ module HinH.NonEmpty
 )where
 import qualified Data.Traversable as T
 import qualified Data.Foldable as T
+import Control.Monad
 import Control.Applicative
 
 
@@ -46,6 +47,9 @@ searchBy f (x :| (x2:xs)) = case f x of
 instance Functor NonEmpty where
  fmap f (y :| ys) = f y :| map f ys
 
+instance Applicative NonEmpty where
+ pure = return
+ (<*>) = ap
 
 instance Monad NonEmpty where
  return = nE
