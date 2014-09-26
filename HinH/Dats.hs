@@ -1,12 +1,12 @@
 {-# LANGUAGE CPP #-}
 {-# OPTIONS_GHC -pgmP cpp #-}
 {-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
-module HInH.Dats
+module HinH.Dats
 (p
 ,h1
 ,div
 )where
-import HInH.Types
+import HinH.Types
 import Prelude hiding(div) 
 
 #define def(tagName) tagName :: (A a,T t) => a -> t;tagName = makeTag #tagName

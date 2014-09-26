@@ -1,7 +1,7 @@
 {-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
-import HInH.Types
-import HInH.Dats
-import HInH.Print
+import HinH.Types
+import HinH.Dats
+import HinH.Print
 import Prelude hiding(div)
 main :: IO ()
 main = putStrLn $ printHTML main2

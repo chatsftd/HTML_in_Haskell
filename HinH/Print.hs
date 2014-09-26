@@ -1,19 +1,12 @@
 {-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
-module HInH.Print
+module HinH.Print
 (printETag
 ,printSTag
 ,printTag
 ,printHTML
 )where
-import HInH.Types
+import HinH.Types
 import qualified Data.Map as M
-{-
-import qualified Data.Map as M
-newtype HTML a = H (Writer TTList a) deriving(Functor,Monad)
-newtype TTList = L ([TT]) 
-data TT = Tag_ Tag | Text String
-data Tag = Tag{name :: String, attr :: M.Map String String, inner :: HTML ()} 
--}
 
 printETag :: EmptyTag -> String
 printETag ETag{nameE = n, attrE = a} = "<" ++ n ++ printAttr a ++ "/>"
@@ -36,10 +29,9 @@ printHTML h = concatMap f tts
 printAttr :: Attr -> String
 printAttr a 
  | M.null a  = ""
- | otherwise = " " ++ concatMap nazo (M.toList a) ++ " "
-
-nazo :: (String,String) -> String
-nazo (nam,str) = nam ++ "=\"" ++ esc str ++ "\""
+ | otherwise = " " ++ concatMap pAttr (M.toList a) ++ " "
+ where
+  pAttr (nam,str) = nam ++ "=\"" ++ esc str ++ "\""
 
 esc :: String -> String
 esc = concatMap e
