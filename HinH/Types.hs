@@ -6,6 +6,7 @@ module HinH.Types
 ,ToHTML(..)
 -- ,B(..)
 ,makeTag
+,makeETag
 ,TT(..)
 ,Tag(..)
 ,EmptyTag(..)
@@ -25,6 +26,9 @@ rawHTML (H _ (H2 w)) = unL $ execWriter w
 
 makeTag :: (ToHTML a, FromTag t) => String -> a -> t
 makeTag tagname inside = __T $ Tag{name = tagname, attr = M.empty, inner = __ inside}
+
+makeETag :: FromETag t => String -> t
+makeETag tagname = __E $ ETag{nameE = tagname, attrE = M.empty}
 
 modifyAttr :: (M.Map String String -> M.Map String String) -> Tag -> Tag
 modifyAttr f t@Tag{attr = a} = t{attr = f a}
