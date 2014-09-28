@@ -9,14 +9,8 @@ module HinH.Dats
 import HinH.Types
 import Prelude hiding(div) 
 
-#define def(tagName) tagName :: (A a,T t) => a -> t;tagName = makeTag #tagName
+#define def(tagName) tagName :: (ToHTML a,FromTag t) => a -> t;tagName = makeTag #tagName
 
 def(p);
 def(h1);
 def(div);
-
-{-
-p :: (A a,T t) => a -> t;p = makeTag "p"
-h1 :: (A a,T t) => a -> t;h1 = makeTag "h1"
-div :: (A a,T t) => a -> t;div = makeTag "div"
--}

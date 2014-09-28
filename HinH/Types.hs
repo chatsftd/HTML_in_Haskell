@@ -3,7 +3,8 @@
 module HinH.Types
 (HTML()
 ,modifyAttr
-,A(..),B(..)
+,ToHTML(..)
+-- ,B(..)
 ,makeTag
 ,TT(..)
 ,Tag(..)
@@ -11,7 +12,7 @@ module HinH.Types
 ,ScriptTag(..)
 ,Attr
 ,rawHTML
-,T()
+,FromTag()
 ,(%)
 )where
 import Control.Monad.Writer
@@ -22,7 +23,7 @@ import qualified Data.Map as M
 rawHTML :: HTML a -> [TT]
 rawHTML (H _ (H2 w)) = unL $ execWriter w
 
-makeTag :: (A a, T t) => String -> a -> t
+makeTag :: (ToHTML a, FromTag t) => String -> a -> t
 makeTag tagname inside = __T $ Tag{name = tagname, attr = M.empty, inner = __ inside}
 
 modifyAttr :: (M.Map String String -> M.Map String String) -> Tag -> Tag
