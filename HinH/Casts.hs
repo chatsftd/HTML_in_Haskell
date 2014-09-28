@@ -5,6 +5,7 @@ module HinH.Casts
 )where
 import Control.Monad.Writer
 import HinH.TypeDef
+import HinH.StateHTML
 
 largeLift :: TT -> HTML a
 largeLift = H (error "cannot use <- or >>= to HTML tags") . H2 . tell . L . (:[]) 
@@ -28,3 +29,4 @@ class T a where __T :: Tag -> a
 instance T Tag where __T = id
 instance T TT where __T = Tag_
 instance T (HTML a) where __T = largeLift . Tag_
+instance T (StateHTML_ a b) where __T = smallLift . largeLift . Tag_

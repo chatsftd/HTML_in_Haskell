@@ -1,15 +1,16 @@
 {-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
 import HinH.Types
 import HinH.Dats
+import HinH.StateHTML
 import HinH.Print
 import Prelude hiding(div)
-import Control.Monad.State
 main :: IO ()
 main = do
  putStrLn "main2:"
  putStrLn $ printHTML main2
  putStrLn "\nmain3:"
- putStrLn $ printHTML $ evalStateT main3 0
+ putStrLn $ printHTML $ evalS main3 0
+
 
 main2 :: HTML ()
 main2 = do
@@ -27,19 +28,21 @@ main2 = do
   p "d"
  
 
-main3 :: StateT Int HTML ()
+
+main3 :: StateHTML Int
 main3 = do
- put 1
+ _PUT 1
  chapter
  chapter
 
-chapter :: StateT Int HTML ()
+chapter :: StateHTML Int
 chapter = do
- num <- get 
- lift $ div % do
+ num <- _GET 
+ div % do
   h1 $ "title" ++ show num
   p "a"
   p "b"
   p "c"
   p "d"
- put $ num + 1  
+ _PUT $ num + 1  
+

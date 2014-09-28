@@ -10,13 +10,13 @@ module HinH.Types
 ,EmptyTag(..)
 ,ScriptTag(..)
 ,Attr
+,rawHTML
 ,T()
 ,(%)
-,rawHTML
 )where
+import Control.Monad.Writer
 import HinH.TypeDef
 import HinH.Casts
-import Control.Monad.Writer
 import qualified Data.Map as M
 
 rawHTML :: HTML a -> [TT]
