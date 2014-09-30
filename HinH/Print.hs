@@ -4,30 +4,58 @@ module HinH.Print
 ,printSTag
 ,printTag
 ,printHTML
+,empF
+,indF
 )where
 import HinH.Types
 import qualified Data.Map as M
 
-printETag :: EmptyTag -> String
-printETag ETag{nameE = n, attrE = a} = "<" ++ n ++ printAttr a ++ "/>"
+data Format = Format{indentLevel :: Int} deriving(Show)
+empF :: Format
+empF = Format{indentLevel = -1}
 
-printSTag :: ScriptTag -> String
-printSTag STag{nameS = n, attrS = a, innerS = s} = "<" ++ n ++ printAttr a ++ ">" ++ s ++ "</" ++ n ++ ">"
+indF :: Format
+indF = Format{indentLevel = 0}
 
-printTag :: Tag -> String
-printTag Tag{name = n, attr = a, inner = h} = "<" ++ n ++ printAttr a ++ ">" ++ printHTML h ++ "</" ++ n ++ ">"
+formHead :: Format -> String
+formHead Format{indentLevel = a} = replicate a '\t'
 
-printHTML :: HTML () -> String
-printHTML h = concatMap f tts
+formFoot :: Format -> String
+formFoot Format{indentLevel = a} 
+ | a >= 0    = "\n"
+ | otherwise = ""
+ 
+up :: Format -> Format
+up f@Format{indentLevel = a} 
+ | a >= 0    = f{indentLevel = a+1}
+ | otherwise = f 
+
+printETag :: Format -> EmptyTag -> String
+printETag f ETag{nameE = n, attrE = a}  = formHead f ++ "<" ++ n ++ printAttr f a ++ "/>" ++ formFoot f
+
+printSTag :: Format -> ScriptTag -> String
+printSTag f STag{nameS = n, attrS = a, innerS = s} = 
+ formHead f ++ "<" ++ n ++ printAttr f a ++ ">" ++ formFoot f 
+ ++ s ++ 
+ formHead f ++ "</" ++ n ++ ">" ++ formFoot f
+
+printTag :: Format -> Tag -> String
+printTag f Tag{name = n, attr = a, inner = h} = 
+ formHead f ++ "<" ++ n ++ printAttr f a ++ ">" ++ formFoot f ++ 
+ printHTML (up f) h ++ 
+ formHead f ++ "</" ++ n ++ ">" ++ formFoot f
+
+printHTML :: Format -> HTML () -> String
+printHTML fo h = concatMap f tts
  where 
-  f(Tag_ t) = printTag t
-  f(ETag_ t) = printETag t
-  f(STag_ t) = printSTag t 
-  f(Text t) = esc t
+  f(Tag_ t) = printTag fo t 
+  f(ETag_ t) = printETag fo t 
+  f(STag_ t) = printSTag fo t  
+  f(Text t) = formHead fo ++ esc t ++ formFoot fo
   tts = rawHTML h
 
-printAttr :: Attr -> String
-printAttr a 
+printAttr :: Format -> Attr -> String
+printAttr _ a  
  | M.null a  = ""
  | otherwise = " " ++ concatMap pAttr (M.toList a) ++ " "
  where
