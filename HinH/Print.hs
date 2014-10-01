@@ -1,9 +1,6 @@
 {-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
 module HinH.Print
-(printETag
-,printSTag
-,printTag
-,printHTML
+(toStr
 ,empF
 ,indF
 )where
@@ -45,6 +42,9 @@ printTag f Tag{name = n, attr = a, inner = h} =
  printHTML (up f) h ++ 
  formHead f ++ "</" ++ n ++ ">" ++ formFoot f
 
+toStr :: Format -> HTML () -> String
+toStr = printHTML 
+ 
 printHTML :: Format -> HTML () -> String
 printHTML fo h = concatMap f tts
  where 

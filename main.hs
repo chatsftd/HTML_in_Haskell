@@ -7,11 +7,11 @@ import Prelude hiding(div)
 main :: IO ()
 main = do
  putStrLn "main2:"
- putStrLn $ printHTML empF main2 
+ putStrLn $ toStr empF main2 
  putStrLn "\nmain3:"
- putStrLn $ printHTML empF $ evalS main3 0
+ putStrLn $ toStr empF $ evalS main3 0
  putStrLn "\nmain3 (indented):"
- putStrLn $ printHTML indF $ evalS main3 0
+ putStrLn $ toStr indF $ evalS main3 0
 
 
 main2 :: HTML ()
