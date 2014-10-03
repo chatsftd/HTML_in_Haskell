@@ -16,7 +16,7 @@ main = do
 
 main2 :: HTML ()
 main2 = do
- div % do
+ div %% [ "class" := "chapter"] % do
   h1 "title1"
   p "a"
   p "b"

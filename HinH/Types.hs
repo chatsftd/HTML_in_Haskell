@@ -1,10 +1,8 @@
-{-# LANGUAGE FlexibleInstances #-}
-{-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
+{-# OPTIONS -Wall #-}
 module HinH.Types
 (HTML()
-,modifyAttr
+,Attr2(..)
 ,ToHTML(..)
--- ,B(..)
 ,makeTag
 ,makeETag
 ,TT(..)
@@ -15,6 +13,7 @@ module HinH.Types
 ,rawHTML
 ,FromTag()
 ,(%)
+,(%%)
 )where
 import Control.Monad.Writer
 import HinH.TypeDef
@@ -30,9 +29,12 @@ makeTag tagname inside = __T Tag{name = tagname, attr = M.empty, inner = __ insi
 makeETag :: FromETag t => String -> t
 makeETag tagname = __E ETag{nameE = tagname, attrE = M.empty}
 
-modifyAttr :: (M.Map String String -> M.Map String String) -> Tag -> Tag
-modifyAttr f t@Tag{attr = a} = t{attr = f a}
 
 infixr 0 %
 (%) :: (HTML a -> b) -> HTML a -> b
 (%) = id
+
+
+infixl 9 %%
+(%%) :: (HTML a -> t1 -> t) -> t1 -> HTML a -> t
+(%%) a b c = (a % c) b
