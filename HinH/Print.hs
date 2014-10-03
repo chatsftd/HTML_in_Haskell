@@ -10,13 +10,14 @@ import qualified Data.Map as M
 import qualified Data.DList as D
 import Data.DList(DList)
 import Data.Monoid
+import Control.Applicative
 
-data Format = Format{indentLevel :: Int} deriving(Show)
+data Format = Format{indentLevel :: Maybe Int} deriving(Show)
 empF :: Format
-empF = Format{indentLevel = -1}
+empF = Format{indentLevel = Nothing}
 
 indF :: Format
-indF = Format{indentLevel = 0}
+indF = Format{indentLevel = Just 0}
 
 
 type Res = DList Char
@@ -31,17 +32,18 @@ infixr 5 ++
 a ++ b = pack a `mappend` pack b
 
 formHead :: Format -> Res
-formHead Format{indentLevel = a} = pack $ replicate a '\t'
+formHead Format{indentLevel = Nothing} = pack   ""
+formHead Format{indentLevel = Just n } = pack $ replicate n '\t'
+
 
 formFoot :: Format -> Res
-formFoot Format{indentLevel = a} 
- | a >= 0    = pack "\n"
- | otherwise = pack ""
+formFoot Format{indentLevel = Nothing} = pack ""
+formFoot Format{indentLevel = Just _ } = pack "\n"
+
  
 up :: Format -> Format
-up f@Format{indentLevel = a} 
- | a >= 0    = f{indentLevel = a+1}
- | otherwise = f 
+up f@Format{indentLevel = a} = f{indentLevel = (+1) <$> a}
+
 
 printETag :: Format -> EmptyTag -> Res
 printETag f ETag{nameE = n, attrE = a}  = formHead f ++ "<" ++ n ++ printAttr f a ++ "/>" ++ formFoot f
@@ -62,13 +64,14 @@ toStr :: Format -> HTML () -> String
 toStr f ht = D.toList $ printHTML f ht
  
 printHTML :: Format -> HTML () -> Res
-printHTML fo h = mConcatMap f tts
- where 
-  f(Tag_ t) = printTag fo t 
-  f(ETag_ t) = printETag fo t 
-  f(STag_ t) = printSTag fo t  
-  f(Text t) = formHead fo ++ esc t ++ formFoot fo
-  tts = rawHTML h
+printHTML fo h = mConcatMap (printInside fo) $ rawHTML h
+
+printInside :: Format -> TT -> Res
+printInside fo (Tag_ t) = printTag fo t 
+printInside fo (ETag_ t) = printETag fo t 
+printInside fo (STag_ t) = printSTag fo t 
+printInside fo (Text t) = formHead fo ++ esc t ++ formFoot fo
+
 
 printAttr :: Format -> Attr -> Res
 printAttr _ a  
