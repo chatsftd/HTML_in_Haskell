@@ -2,13 +2,14 @@
 {-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
 module HinH.TypeDef
 (HTML(..)
-,H2(..)
 ,TTList(..)
 ,TT(..)
 ,Tag(..)
 ,EmptyTag(..)
 ,ScriptTag(..)
 ,Attr
+,Attr2(..)
+,rawHTML
 )where
 import Control.Monad.Writer
 import HinH.NonEmpty
@@ -16,14 +17,16 @@ import Control.Applicative
 import qualified Data.Map as M
 
 
-data HTML a = H {dat :: a, unH :: H2 ()}
-newtype H2 a = H2 (Writer TTList a) deriving(Functor,Applicative,Monad)
+
+data HTML a = H {dat :: a, unH :: Writer TTList ()}
 newtype TTList = L {unL :: [TT]}
 type Attr = M.Map String String
 data TT = Tag_ Tag | ETag_ EmptyTag | STag_ ScriptTag | Text String 
 data Tag = Tag{name :: String, attr :: Attr, inner :: HTML ()} 
 data EmptyTag = ETag{nameE :: String, attrE :: Attr}
 data ScriptTag = STag{nameS :: String, attrS :: Attr, innerS :: String}
+
+data Attr2 = String := String deriving(Show,Eq,Ord)
 
 instance Functor HTML where fmap = liftM
 instance Applicative HTML where pure = return; (<*>) = ap
@@ -43,3 +46,5 @@ add x xs y ys = case (last' xs2,y) of
  _ -> x:xs++y:ys
  where xs2 = x :| xs 
 
+rawHTML :: HTML a -> [TT]
+rawHTML (H _ w) = unL $ execWriter w

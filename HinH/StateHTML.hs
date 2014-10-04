@@ -28,18 +28,6 @@ _MOD f = do
  x <- _GET
  _PUT $ f x
 
-{-
-_PUT x = S $ do
- put x
- -}
- 
-{- 
-_GET = S $ do
- x <- get
- return x
- 
--}
-
 runS :: StateHTML a -> a -> HTML ((),a)
 runS = runStateT . unS
 
@@ -48,4 +36,3 @@ evalS m = fmap fst . runS m
 
 execS :: StateHTML a -> a -> HTML a
 execS m = fmap snd . runS m
-

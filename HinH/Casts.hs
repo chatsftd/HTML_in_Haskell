@@ -6,13 +6,13 @@ module HinH.Casts
 ,FromETag(..)
 ,FromSTag(..)
 )where
-import Control.Monad.Writer
+import Control.Monad.Writer(tell)
 import HinH.TypeDef
 import HinH.StateHTML
 import qualified Data.Map as M
 
 largeLift :: TT -> HTML a
-largeLift = H (error "cannot use <- or >>= to HTML tags") . H2 . tell . L . (:[]) 
+largeLift = H (error "cannot use <- or >>= to HTML tags") . tell . L . (:[])
 
 class Void a where vvv :: [a] -> HTML b
 instance Void Char where vvv = largeLift . Text
@@ -44,16 +44,13 @@ instance FromETag (HTML a) where __E = largeLift . ETag_
 instance FromETag (StateHTML_ a b) where __E = smallLift . largeLift . ETag_
 instance (Modifier c,FromETag a) => FromETag (c -> a) where __E et c =  __E $ modif c et
 
-
-class Modifier c where modif :: (Modifier c,ModifyAttr a) => c -> a -> a
-instance Modifier Attr2 where modif (a := b) = modifyAttr $ M.insert a b 
-instance (Modifier c) => Modifier [c] where modif ms a = foldr modif a ms
-
-data Attr2 = String := String deriving(Show,Eq,Ord)
-
 class FromSTag a where __S :: ScriptTag -> a
 instance FromSTag ScriptTag where __S = id
 instance FromSTag TT where __S = STag_
 instance FromSTag (HTML a) where __S = largeLift . STag_
 instance FromSTag (StateHTML_ a b) where __S = smallLift . largeLift . STag_
+instance (Modifier c,FromSTag a) => FromSTag (c -> a) where __S et c =  __S $ modif c et
 
+class Modifier c where modif :: (Modifier c,ModifyAttr a) => c -> a -> a
+instance Modifier Attr2 where modif (a := b) = modifyAttr $ M.insert a b 
+instance (Modifier c) => Modifier [c] where modif ms a = foldr modif a ms

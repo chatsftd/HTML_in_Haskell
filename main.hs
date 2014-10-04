@@ -1,8 +1,6 @@
 {-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
-import HinH.Types
+import HinH.Public
 import HinH.Dats
-import HinH.StateHTML
-import HinH.Print
 import Prelude hiding(div)
 main :: IO ()
 main = do

@@ -1,7 +1,6 @@
 {-# OPTIONS -Wall #-}
 module HinH.NonEmpty
 (NonEmpty(..)
-
 ,cons
 ,snoc
 ,snoc2

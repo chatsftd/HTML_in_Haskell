@@ -4,7 +4,7 @@ module HinH.Print
 ,empF
 ,indF
 )where
-import HinH.Types
+import HinH.TypeDef
 import Prelude hiding((++))
 import qualified Data.Map as M
 import qualified Data.DList as D
