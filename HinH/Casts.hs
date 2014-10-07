@@ -14,8 +14,6 @@ import qualified Data.Map as M
 largeLift :: TT -> HTML a
 largeLift = H (error "cannot use <- or >>= to HTML tags") . tell . L . (:[])
 
-class Void a where vvv :: [a] -> HTML b
-instance Void Char where vvv = largeLift . Text
 
 class ToHTML a where __ :: a -> HTML b
 instance ToHTML (HTML a) where __ = H undefined .  unH 
@@ -24,6 +22,8 @@ instance ToHTML Tag where __ = largeLift . Tag_
 instance ToHTML EmptyTag where __ = largeLift . ETag_
 instance ToHTML ScriptTag where __ = largeLift . STag_
 instance (Void a) => ToHTML [a] where __ = vvv
+class Void a where vvv :: [a] -> HTML b
+instance Void Char where vvv = largeLift . Text
 
 class ModifyAttr a where modifyAttr :: (M.Map String String -> M.Map String String) -> a -> a
 instance ModifyAttr Tag where modifyAttr f t@Tag{attr = a} = t{attr = f a}

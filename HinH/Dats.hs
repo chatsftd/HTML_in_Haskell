@@ -1,6 +1,6 @@
 {-# LANGUAGE CPP #-}
 {-# OPTIONS_GHC -pgmP cpp #-}
-{-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
+{-# OPTIONS -Wall #-}
 module HinH.Dats
 (p
 ,h1

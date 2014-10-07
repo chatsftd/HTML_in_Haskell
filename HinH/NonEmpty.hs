@@ -14,7 +14,7 @@ import qualified Data.Foldable as T
 import Control.Monad
 import Control.Applicative
 
-data NonEmpty a = (:|)a [a] deriving(Show,Eq,Ord)
+data NonEmpty a = a :| [a] deriving(Show,Eq,Ord)
  
 instance T.Traversable NonEmpty where
  traverse up (x :| []    ) = (:|[]) <$> up x

@@ -1,5 +1,5 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
+{-# OPTIONS -Wall #-}
 module HinH.TypeDef
 (HTML(..)
 ,TTList(..)
