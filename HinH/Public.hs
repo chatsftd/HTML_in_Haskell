@@ -6,7 +6,7 @@ module HinH.Public
 ,(%%)
 ,HTML()
 ,toStr
-,empF,indF
+,empF,indF,parF
 ,evalS,execS,runS
 ,_PUT,_GET,_MOD
 )where

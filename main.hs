@@ -3,13 +3,14 @@ import HinH.Public
 import HinH.Dats
 import Prelude hiding(div)
 main :: IO ()
-main = do
- putStrLn "main2:"
- putStrLn $ toStr empF main2 
- putStrLn "\nmain3:"
- putStrLn $ toStr empF $ evalS main3 0
- putStrLn "\nmain3 (indented):"
- putStrLn $ toStr indF $ evalS main3 0
+main = mapM_ putStrLn [
+ "main2:",                      toStr empF main2,           "",
+ "main2 (fully indented):",     toStr indF main2,           "",
+ "main2 (partially indented):", toStr parF main2,           "",
+ "main3:",                      toStr empF $ evalS main3 0, "",
+ "main3 (fully indented):",     toStr indF $ evalS main3 0, "",
+ "main3 (partially indented):", toStr parF $ evalS main3 0
+ ]
 
 
 main2 :: HTML ()
@@ -18,14 +19,6 @@ main2 = do
   h1 "title1"
   p "a"
   p "b"
-  p "c"
-  p "d" 
- div % do
-  h1 "title2"
-  p "a"
-  p "b"
-  p "c"
-  p "d"
  
 
 
