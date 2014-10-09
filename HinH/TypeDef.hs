@@ -32,7 +32,35 @@ instance Functor HTML where fmap = liftM
 instance Applicative HTML where pure = return; (<*>) = ap
 instance Monad HTML where
  return a = H a $ return ()
- H{dat = a, unH = m} >>= f = H b $ m >> n where H b n = f a
+ H a m >>= f  =  H b (then2 m n) where H b n = f a
+ 
+then2 :: Writer TTList () -> Writer TTList () -> Writer TTList ()
+then2 m n = m >>= \{- strictness -}() -> n
+
+{-
+return a >>= f
+H a (return ()) >>= f
+H b (return () `then2` n) where H b n = f a
+H b n where H b n = f a
+
+H a m >>= return
+H b $ m `then2` n where H b n = return a
+H b $ m `then2` n where H b n = H a (return ())
+H a (m `then2` return ()) 
+H a (m >>= \() -> return ()) 
+H a (m >>= return) 
+H a m 
+
+(H a m >>= \a -> H b n) >>= \b -> H c o
+H b (then2 m n) >>= \b -> H c o
+H c (then2 (then2 m n) o) 
+H c ((m `then2` n) `then2` o) 
+H c (m `then2` (n `then2` o))
+H c (then m (then n o))
+H a m >>=  \a -> H c (then n o)
+H a m >>= (\a -> H b n  >>= \b -> H c o)
+-} 
+ 
  
 instance Monoid TTList where
  mempty = L []
