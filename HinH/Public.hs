@@ -9,6 +9,7 @@ module HinH.Public
 ,empF,indF,parF
 ,evalS,execS,runS
 ,_PUT,_GET,_MOD
+,RawText(..)
 )where
 import Prelude hiding(div)
 import HinH.TypeDef

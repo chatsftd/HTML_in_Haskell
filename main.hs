@@ -19,7 +19,7 @@ main2 = do
   h1 "title1"
   p "a"
   p "b"
- 
+  script $ R "alert(1);"
 
 
 main3 :: StateHTML Int

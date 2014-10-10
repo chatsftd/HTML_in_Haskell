@@ -53,9 +53,20 @@ printETag f ETag{nameE = n, attrE = a}  = formHead f ++ "<" ++ n ++ printAttr f 
 
 printSTag :: Format -> ScriptTag -> Txt
 printSTag f STag{nameS = n, attrS = a, innerS = s} = 
- formHead f ++ "<" ++ n ++ printAttr f a ++ ">" ++ formFoot f 
- ++ s ++ 
- formHead f ++ "</" ++ n ++ ">" ++ formFoot f
+ formHead f ++ "<" ++ n ++ printAttr f a ++ ">" 
+ ++ printRawText f s ++ 
+ "</" ++ n ++ ">" ++ formFoot f
+ 
+printRawText :: Format -> RawText -> Txt
+printRawText f (R s) = 
+ if not(fully f) && singleLine s 
+  then pack s 
+  else formFoot f ++ formHead (up f) ++ s ++ formFoot (up f) ++ formHead f
+
+singleLine :: String -> Bool
+singleLine t = case splitAt 60 t of
+ (a,"") -> all (/='\n') a
+ _      -> False
 
 printTag :: Format -> Tag -> Txt
 printTag f Tag{name = n, attr = a, inner = h} = 
@@ -67,8 +78,8 @@ toStr f ht = D.toList $ printHTML f ht
 printHTML2 :: Format -> HTML () -> Txt
 printHTML2 f h = case (rawHTML h,fully f) of
  ([Text t],False) 
-  | length t < 60 -> pack $ esc t
- _                -> formFoot f ++ printHTML (up f) h ++ formHead f 
+  | singleLine t -> pack $ esc t
+ _               -> formFoot f ++ printHTML (up f) h ++ formHead f 
  
 printHTML :: Format -> HTML () -> Txt
 printHTML fo h = mConcatMap (printInside fo) $ rawHTML h

@@ -10,6 +10,7 @@ module HinH.TypeDef
 ,Attr
 ,Attr2(..)
 ,rawHTML
+,RawText(..)
 )where
 import Control.Monad.Writer
 import HinH.NonEmpty
@@ -24,7 +25,8 @@ type Attr = M.Map String String
 data TT = Tag_ Tag | ETag_ EmptyTag | STag_ ScriptTag | Text String 
 data Tag = Tag{name :: String, attr :: Attr, inner :: HTML ()} 
 data EmptyTag = ETag{nameE :: String, attrE :: Attr}
-data ScriptTag = STag{nameS :: String, attrS :: Attr, innerS :: String}
+data ScriptTag = STag{nameS :: String, attrS :: Attr, innerS :: RawText}
+newtype RawText = R {unR :: String}
 
 data Attr2 = String := String deriving(Show,Eq,Ord)
 
