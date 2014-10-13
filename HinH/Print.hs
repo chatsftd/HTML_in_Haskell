@@ -89,6 +89,7 @@ printInside fo (Tag_ t) = printTag fo t
 printInside fo (ETag_ t) = printETag fo t 
 printInside fo (STag_ t) = printSTag fo t 
 printInside fo (Text t) = formHead fo ++ esc t ++ formFoot fo
+printInside fo (Raw t) = formHead fo ++ unR t ++ formFoot fo
 
 
 printAttr :: Format -> Attr -> Txt

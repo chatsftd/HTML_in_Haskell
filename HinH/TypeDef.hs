@@ -22,7 +22,7 @@ import qualified Data.Map as M
 data HTML a = H {dat :: a, unH :: Writer TTList ()}
 newtype TTList = L {unL :: [TT]}
 type Attr = M.Map String String
-data TT = Tag_ Tag | ETag_ EmptyTag | STag_ ScriptTag | Text String 
+data TT = Tag_ Tag | ETag_ EmptyTag | STag_ ScriptTag | Text String | Raw RawText
 data Tag = Tag{name :: String, attr :: Attr, inner :: HTML ()} 
 data EmptyTag = ETag{nameE :: String, attrE :: Attr}
 data ScriptTag = STag{nameS :: String, attrS :: Attr, innerS :: RawText}

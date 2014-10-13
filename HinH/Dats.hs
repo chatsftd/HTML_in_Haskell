@@ -5,15 +5,24 @@ module HinH.Dats
 (p
 ,h1
 ,div
+,html
+,head
+,title
+,body
+
 ,br
 ,img
 ,script
+,doctypeHTML5
 )where
 import HinH.TypeDef
 import HinH.Casts
 import qualified Data.Map as M
-import Prelude hiding(div) 
+import Prelude hiding(div,head) 
 
+
+doctypeHTML5 :: HTML ()
+doctypeHTML5 = __ . Raw . R $ "<!DOCTYPE html>"
 
 makeTag :: (ToHTML a, FromTag t) => String -> a -> t
 makeTag tagname inside = __T Tag{name = tagname, attr = M.empty, inner = __ inside}
@@ -31,6 +40,10 @@ makeSTag tagname inside = __S STag{nameS = tagname, attrS = M.empty, innerS = in
 def(p);
 def(h1);
 def(div);
+def(html);
+def(head);
+def(title);
+def(body);
 
 defE(br);
 defE(img);

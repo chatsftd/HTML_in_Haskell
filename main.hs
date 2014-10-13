@@ -1,7 +1,7 @@
 {-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
 import HinH.Public
 import HinH.Dats
-import Prelude hiding(div)
+import Prelude hiding(div,head)
 main :: IO ()
 main = mapM_ putStrLn [
  "main2:",                      toStr empF main2,           "",
@@ -9,7 +9,8 @@ main = mapM_ putStrLn [
  "main2 (partially indented):", toStr parF main2,           "",
  "main3:",                      toStr empF $ evalS main3 0, "",
  "main3 (fully indented):",     toStr indF $ evalS main3 0, "",
- "main3 (partially indented):", toStr parF $ evalS main3 0
+ "main3 (partially indented):", toStr parF $ evalS main3 0, "",
+ "main4 (partially indented):", toStr parF main4
  ]
 
 
@@ -39,3 +40,11 @@ chapter = do
   p "d"
  _PUT $ num + 1  
 
+main4 :: HTML ()
+main4 = do
+ doctypeHTML5
+ html %% [ "lang" := "en" ] % do
+  head % do
+   title "title"
+  body % do
+   main2  
