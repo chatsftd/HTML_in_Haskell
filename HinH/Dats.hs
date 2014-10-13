@@ -1,24 +1,32 @@
 {-# LANGUAGE CPP #-}
 {-# OPTIONS_GHC -pgmP cpp #-}
 {-# OPTIONS -Wall #-}
-module HinH.Dats
-(p
-,h1
-,div
-,html
-,head
-,title
-,body
 
-,br
-,img
-,script
-,doctypeHTML5
+#define defTags def(p)def(h1)def(div)def(html)def(head)def(title)def(body)
+#define defETags defE(br)defE(img)
+#define defSTags defS(script)
+
+module HinH.Dats
+(doctypeHTML5
+#define defAll defTags defETags defSTags
+#define def(tagName) ,tagName
+#define defE(tagName) ,tagName
+#define defS(tagName) ,tagName
+defAll
+#undef def
+#undef defE
+#undef defS
+
 )where
 import HinH.TypeDef
 import HinH.Casts
 import qualified Data.Map as M
 import Prelude hiding(div,head) 
+#define def(tagName) tagName :: (ToHTML a,FromTag t) => a -> t; tagName = makeTag #tagName;
+#define defE(eTagName) eTagName :: FromETag t => t; eTagName = makeETag #eTagName;
+#define defS(sTagName) sTagName :: FromSTag t => RawText -> t; sTagName = makeSTag #sTagName;
+defAll
+
 
 
 doctypeHTML5 :: HTML ()
@@ -32,20 +40,3 @@ makeETag tagname = __E ETag{nameE = tagname, attrE = M.empty}
 
 makeSTag :: (FromSTag t) => String -> RawText -> t
 makeSTag tagname inside = __S STag{nameS = tagname, attrS = M.empty, innerS = inside}
-
-#define def(tagName) tagName :: (ToHTML a,FromTag t) => a -> t; tagName = makeTag #tagName
-#define defE(eTagName) eTagName :: FromETag t => t; eTagName = makeETag #eTagName
-#define defS(sTagName) sTagName :: FromSTag t => RawText -> t; sTagName = makeSTag #sTagName
-
-def(p);
-def(h1);
-def(div);
-def(html);
-def(head);
-def(title);
-def(body);
-
-defE(br);
-defE(img);
-
-defS(script);
