@@ -65,7 +65,7 @@ printRawText f (R s) =
 
 singleLine :: String -> Bool
 singleLine t = case splitAt 60 t of
- (a,"") -> all (/='\n') a
+ (a,"") -> '\n' `notElem` a
  _      -> False
 
 printTag :: Format -> Tag -> Txt
